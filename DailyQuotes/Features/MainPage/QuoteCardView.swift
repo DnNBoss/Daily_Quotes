@@ -8,27 +8,23 @@
 import SwiftUI
 
 struct QuoteCardView: View {
+    let quote: Quote
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text(Quote.sample.text)
-                .font(.title2)
+            Text(quote.text)
+                .font(.system(.title2, design: .serif, weight: .medium))
                 .fontWeight(.medium)
                 .fixedSize(horizontal: false, vertical: true)
             
-            Text(Quote.sample.author)
+            Text(quote.author)
                 .font(.subheadline)
-                .foregroundColor(.secondary)
+                .foregroundStyle(.secondary)
         }
-        .padding(24)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            RoundedRectangle(cornerRadius: 20)
-                .fill(.thinMaterial)
-        )
-        .padding(.horizontal, 24)
     }
 }
 
 #Preview {
-    QuoteCardView()
+    QuoteCardView(quote: .sample)
 }

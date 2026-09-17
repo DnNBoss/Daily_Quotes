@@ -16,8 +16,8 @@ struct ActionsView: View {
             Spacer()
             actionButton(icon: "square.and.arrow.up", title: "Share") { }
         }
-        .padding(.horizontal, 24)
-        .padding(.vertical, 16)
+        .padding(.horizontal, 48)
+        .frame(maxWidth: .infinity)
     }
     
     @ViewBuilder

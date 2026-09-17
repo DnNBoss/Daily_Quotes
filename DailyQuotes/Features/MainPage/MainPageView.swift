@@ -8,20 +8,27 @@
 import SwiftUI
 
 struct MainPageView: View {
+    private let timeOfDay: TimeOfDay = .current
+    
     var body: some View {
         VStack(spacing: 0) {
-            HeaderView()
+            HeaderView(timeOfDay: timeOfDay)
+                .padding(.top, 8)
             
             Spacer()
             
-            QuoteCardView()
+            QuoteBadgeView(timeOfDay: timeOfDay)
+                .padding(.bottom, 16)
+            
+            QuoteCardView(quote: .sample)
             
             Spacer()
             
             ActionsView()
-//                .padding(.bottom, 200)
+
             Spacer()
         }
+        .padding(.horizontal, 20)
     }
 }
 
