@@ -8,6 +8,8 @@
 import Foundation
 
 enum APIConfiguration {
+    static let quoteOfTheDayURL = URL(string: "https://api.api-ninjas.com/v2/quoteoftheday")
+    
     static var apiKey: String {
         guard
             let apiKey = Bundle.main.object(forInfoDictionaryKey: "API_NINJAS_KEY") as? String,
