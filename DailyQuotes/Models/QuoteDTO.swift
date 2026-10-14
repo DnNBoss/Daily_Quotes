@@ -19,9 +19,8 @@ extension QuoteDTO {
         Quote(
             text: quote,
             author: author,
-            category: categories?.first ?? "",
-            createdAt: .now,
-            isFavorite: false
+            categories: categories ?? [],
+            addedAt: .now
         )
     }
 }
