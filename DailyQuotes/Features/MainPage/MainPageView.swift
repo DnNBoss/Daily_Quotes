@@ -5,12 +5,25 @@
 //  Created by Дмитрий Козлов on 13.09.26.
 //
 
+import SwiftData
 import SwiftUI
 
 struct MainPageView: View {
+    @Environment(\.modelContext) private var modelContext
+    @Query private var quotes: [Quote]
+    
     @State private var viewModel = ViewModel()
     
     private let timeOfDay: TimeOfDay = .current
+    
+    private var isFavorite: Bool {
+        guard let quote = viewModel.currentQuote else { return false }
+        return quotes.contains { $0.text == quote.text && $0.author == quote.author }
+    }
+    
+    private var favoritesService: FavoritesService {
+        FavoritesService(context: modelContext)
+    }
     
     var body: some View {
         VStack(spacing: 0) {
@@ -24,7 +37,11 @@ struct MainPageView: View {
             quoteScrollArea
                 .frame(maxHeight: .infinity)
             
-            ActionsView()
+            ActionsView(
+                isFavorite: isFavorite,
+                isDisabled: viewModel.currentQuote == nil,
+                onToggleFavorite: toggleFavorite
+            )
                 .padding(.top, 16)
             
             nextQuoteLabel
@@ -76,6 +93,11 @@ struct MainPageView: View {
                 }
             }
         }
+    }
+    
+    private func toggleFavorite() {
+        guard let quote = viewModel.currentQuote else { return }
+        favoritesService.toggle(quote)
     }
 }
 

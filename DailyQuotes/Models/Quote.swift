@@ -39,4 +39,8 @@ extension Quote {
             addedAt: Date()
         )
     }
+    
+    func makeCopy() -> Quote {
+        Quote(text: text, author: author, categories: categories)
+    }
 }
