@@ -10,8 +10,11 @@ import SwiftUI
 
 struct FavoritesListView: View {
     @Environment(\.modelContext) var modelContext
-    
     @Query var quotes: [Quote]
+    
+    private var favoritesService: FavoritesService {
+        FavoritesService(context: modelContext)
+    }
     
     var body: some View {
         List {
@@ -22,6 +25,7 @@ struct FavoritesListView: View {
                     FavoriteRowView(quote: quote)
                 }
             }
+            .onDelete(perform: removeItems)
         }
         .overlay {
             if quotes.isEmpty {
@@ -36,6 +40,12 @@ struct FavoritesListView: View {
     
     init(sortOrder: SortOrder) {
         _quotes = Query(sort: \.addedAt, order: sortOrder)
+    }
+    
+    private func removeItems(at offsets: IndexSet) {
+        for offset in offsets {
+            favoritesService.delete(quotes[offset])
+        }
     }
 }
 

@@ -19,6 +19,10 @@ struct FavoritesService {
         }
     }
     
+    func delete(_ quote: Quote) {
+        context.delete(quote)
+    }
+    
     func fetch(_ quote: Quote) -> Quote? {
         let text = quote.text
         let author = quote.author
