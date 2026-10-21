@@ -13,6 +13,8 @@ struct MainPageView: View {
     @Query private var quotes: [Quote]
     
     @State private var viewModel = ViewModel()
+    @State private var showingErrorAlert = false
+    @State private var errorMessage = ""
     
     private let timeOfDay: TimeOfDay = .current
     
@@ -42,12 +44,17 @@ struct MainPageView: View {
                 isDisabled: viewModel.currentQuote == nil,
                 onToggleFavorite: toggleFavorite
             )
-                .padding(.top, 16)
+            .padding(.top, 16)
             
             nextQuoteLabel
                 .padding(.vertical, 32)
         }
         .padding(.horizontal, 20)
+        .alert("Error!", isPresented: $showingErrorAlert) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(errorMessage)
+        }
         .task {
             await viewModel.loadIfNeeded()
         }
@@ -97,7 +104,12 @@ struct MainPageView: View {
     
     private func toggleFavorite() {
         guard let quote = viewModel.currentQuote else { return }
-        favoritesService.toggle(quote)
+        do {
+            try favoritesService.toggle(quote)
+        } catch {
+            errorMessage = error.localizedDescription
+            showingErrorAlert = true
+        }
     }
 }
 
