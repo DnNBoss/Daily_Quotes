@@ -9,8 +9,10 @@ import SwiftData
 import SwiftUI
 
 struct FavoritesListView: View {
-    @Environment(\.modelContext) var modelContext
-    @Query var quotes: [Quote]
+    @Environment(\.modelContext) private var modelContext
+    @Query private var quotes: [Quote]
+    
+    private let searchText: String
     
     private var favoritesService: FavoritesService {
         FavoritesService(context: modelContext)
@@ -29,17 +31,29 @@ struct FavoritesListView: View {
         }
         .overlay {
             if quotes.isEmpty {
-                ContentUnavailableView(
-                    "No favorites yet",
-                    systemImage: "heart",
-                    description: Text("Add quotes to your favorites list...")
-                )
+                if searchText.isEmpty {
+                    ContentUnavailableView(
+                        "No favorites yet",
+                        systemImage: "heart",
+                        description: Text("Add quotes to your favorites list...")
+                    )
+                } else {
+                    ContentUnavailableView.search(text: searchText)
+                }
             }
         }
     }
     
-    init(sortOrder: SortOrder) {
-        _quotes = Query(sort: \.addedAt, order: sortOrder)
+    init(searchText: String, sort: [SortDescriptor<Quote>]) {
+        self.searchText = searchText
+        
+        let predicate: Predicate<Quote>? = searchText.isEmpty
+        ? nil
+        : #Predicate<Quote> { quote in
+            quote.text.localizedStandardContains(searchText)
+            || quote.author.localizedStandardContains(searchText)
+        }
+        _quotes = Query(filter: predicate, sort: sort)
     }
     
     private func removeItems(at offsets: IndexSet) {
@@ -59,8 +73,11 @@ struct FavoritesListView: View {
         context.insert(Quote.sample)
         context.insert(Quote.sample)
         
-        return FavoritesListView(sortOrder: .reverse)
-            .modelContainer(container)
+        return FavoritesListView(
+            searchText: "",
+            sort: [SortDescriptor(\.addedAt, order: .forward)]
+        )
+        .modelContainer(container)
     } catch {
         return Text("Failed to create preview: \(error.localizedDescription)")
     }
