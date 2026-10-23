@@ -23,6 +23,7 @@ struct FavoriteRowView: View {
                 HStack {
                     ForEach(quote.categories.prefix(4), id: \.self) { category in
                         Text(category.capitalized)
+                            .lineLimit(1)
                             .font(.caption)
                             .padding(8)
                             .background(.quinary, in: .capsule)
