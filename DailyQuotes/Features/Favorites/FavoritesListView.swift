@@ -22,7 +22,7 @@ struct FavoritesListView: View {
         List {
             ForEach(quotes) { quote in
                 NavigationLink {
-                    //Details
+                    QuoteDetailView(quote: quote)
                 } label: {
                     FavoriteRowView(quote: quote)
                 }
