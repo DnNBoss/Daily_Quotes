@@ -9,7 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct MainPageView: View {
-    @Environment(\.modelContext) private var modelContext
+    @Environment(FavoritesService.self) private var favoritesService
     @Query private var quotes: [Quote]
     
     @State private var viewModel = ViewModel()
@@ -21,10 +21,6 @@ struct MainPageView: View {
     private var isFavorite: Bool {
         guard let quote = viewModel.currentQuote else { return false }
         return quotes.contains { $0.text == quote.text && $0.author == quote.author }
-    }
-    
-    private var favoritesService: FavoritesService {
-        FavoritesService(context: modelContext)
     }
     
     var body: some View {
@@ -115,4 +111,5 @@ struct MainPageView: View {
 
 #Preview {
     MainPageView()
+        .environment(PreviewData.favoritesService)
 }

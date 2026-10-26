@@ -8,16 +8,12 @@
 import SwiftUI
 
 struct QuoteDetailView: View {
-    @Environment(\.modelContext) private var modelContext
+    @Environment(FavoritesService.self) private var favoritesService
     @Environment(\.dismiss) private var dismiss
     
     @State private var showingDeleteConfirm = false
     
     let quote: Quote
-    
-    private var favoritesService: FavoritesService {
-        FavoritesService(context: modelContext)
-    }
     
     var body: some View {
         List {
@@ -81,4 +77,5 @@ struct QuoteDetailView: View {
 
 #Preview {
     QuoteDetailView(quote: .sample)
+        .environment(PreviewData.favoritesService)
 }

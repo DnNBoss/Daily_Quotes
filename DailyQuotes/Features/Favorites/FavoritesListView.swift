@@ -9,14 +9,10 @@ import SwiftData
 import SwiftUI
 
 struct FavoritesListView: View {
-    @Environment(\.modelContext) private var modelContext
+    @Environment(FavoritesService.self) private var favoritesService
     @Query private var quotes: [Quote]
     
     private let searchText: String
-    
-    private var favoritesService: FavoritesService {
-        FavoritesService(context: modelContext)
-    }
     
     var body: some View {
         List {
@@ -64,21 +60,10 @@ struct FavoritesListView: View {
 }
 
 #Preview {
-    do {
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        let container = try ModelContainer(for: Quote.self, configurations: config)
-        
-        let context = container.mainContext
-        context.insert(Quote.sample)
-        context.insert(Quote.sample)
-        context.insert(Quote.sample)
-        
-        return FavoritesListView(
-            searchText: "",
-            sort: [SortDescriptor(\.addedAt, order: .forward)]
-        )
-        .modelContainer(container)
-    } catch {
-        return Text("Failed to create preview: \(error.localizedDescription)")
-    }
+    FavoritesListView(
+        searchText: "",
+        sort: [SortDescriptor(\.addedAt, order: .forward)]
+    )
+    .modelContainer(PreviewData.container)
+    .environment(PreviewData.favoritesService)
 }

@@ -47,4 +47,6 @@ struct FavoritesView: View {
 
 #Preview {
     FavoritesView()
+        .modelContainer(PreviewData.container)
+        .environment(PreviewData.favoritesService)
 }

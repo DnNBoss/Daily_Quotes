@@ -10,10 +10,13 @@ import SwiftUI
 
 @main
 struct DailyQuotesApp: App {
+    @State private var dependencies = AppDependencies()
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .modelContainer(for: Quote.self)
+                .environment(dependencies.favoritesService)
         }
+        .modelContainer(dependencies.modelContainer)
     }
 }

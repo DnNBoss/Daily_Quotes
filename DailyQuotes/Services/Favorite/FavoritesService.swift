@@ -8,8 +8,13 @@
 import Foundation
 import SwiftData
 
-struct FavoritesService {
+@Observable
+final class FavoritesService {
     let context: ModelContext
+    
+    init(context: ModelContext) {
+        self.context = context
+    }
     
     func toggle(_ quote: Quote) throws {
         if let existing = try fetch(quote) {
