@@ -12,15 +12,19 @@ struct FavoritesView: View {
     @AppStorage("favorites.sort") private var sort: FavoritesSort = .dateAdded
     @AppStorage("favorites.ascending") private var ascending = false
     
+    @State private var path: [Quote] = []
     @State private var searchText = ""
     
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             FavoritesListView(
                 searchText: searchText,
                 sort: sort.descriptors(ascending: ascending)
             )
             .navigationTitle("Favorites")
+            .navigationDestination(for: Quote.self) { quote in
+                QuoteDetailView(quote: quote)
+            }
             .searchable(text: $searchText, prompt: "Search quotes")
             .toolbar {
                 ToolbarItem {
@@ -41,6 +45,9 @@ struct FavoritesView: View {
             .onChange(of: sort) { _, newValue in
                 ascending = newValue.defaultAscending
             }
+        }
+        .onDisappear {
+            path.removeAll()
         }
     }
 }

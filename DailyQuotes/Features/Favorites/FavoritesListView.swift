@@ -17,11 +17,8 @@ struct FavoritesListView: View {
     var body: some View {
         List {
             ForEach(quotes) { quote in
-                NavigationLink {
-                    QuoteDetailView(quote: quote)
-                } label: {
-                    FavoriteRowView(quote: quote)
-                }
+                NavigationLink(value: quote) {
+                    FavoriteRowView(quote: quote)}
             }
             .onDelete(perform: removeItems)
         }
@@ -60,10 +57,15 @@ struct FavoritesListView: View {
 }
 
 #Preview {
-    FavoritesListView(
-        searchText: "",
-        sort: [SortDescriptor(\.addedAt, order: .forward)]
-    )
+    NavigationStack {
+        FavoritesListView(
+            searchText: "",
+            sort: [SortDescriptor(\.addedAt, order: .forward)]
+        )
+        .navigationDestination(for: Quote.self) {
+            QuoteDetailView(quote: $0)
+        }
+    }
     .modelContainer(PreviewData.container)
     .environment(PreviewData.favoritesService)
 }
