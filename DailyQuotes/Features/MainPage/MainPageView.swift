@@ -7,12 +7,14 @@
 
 import SwiftData
 import SwiftUI
+import Translation
 
 struct MainPageView: View {
     @Environment(FavoritesService.self) private var favoritesService
     @Query private var quotes: [Quote]
     
     @State private var viewModel = ViewModel()
+    @State private var showingTranslation = false
     @State private var showingErrorAlert = false
     @State private var errorMessage = ""
     
@@ -38,9 +40,11 @@ struct MainPageView: View {
             ActionsView(
                 quote: viewModel.currentQuote,
                 isFavorite: isFavorite,
-                onToggleFavorite: toggleFavorite
+                onToggleFavorite: toggleFavorite,
+                onTranslate: { showingTranslation = true }
             )
             .padding(.top, 16)
+            .translationPresentation(isPresented: $showingTranslation, text: viewModel.currentQuote?.text ?? "")
             
             nextQuoteLabel
                 .padding(.vertical, 32)

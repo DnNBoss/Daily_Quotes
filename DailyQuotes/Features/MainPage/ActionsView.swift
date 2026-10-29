@@ -11,6 +11,7 @@ struct ActionsView: View {
     let quote: Quote?
     let isFavorite: Bool
     let onToggleFavorite: () -> Void
+    let onTranslate: () -> Void
     
     var body: some View {
         HStack(spacing: 0) {
@@ -24,7 +25,7 @@ struct ActionsView: View {
             
             Spacer()
             
-            Button(action: {}) {
+            Button(action: onTranslate) {
                 label(
                     "Translate",
                     systemImage: "translate"
@@ -63,5 +64,5 @@ struct ActionsView: View {
 }
 
 #Preview {
-    ActionsView(quote: .sample, isFavorite: false, onToggleFavorite: { })
+    ActionsView(quote: .sample, isFavorite: false, onToggleFavorite: { }, onTranslate: { })
 }
