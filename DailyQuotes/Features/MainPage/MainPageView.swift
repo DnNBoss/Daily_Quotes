@@ -36,8 +36,8 @@ struct MainPageView: View {
                 .frame(maxHeight: .infinity)
             
             ActionsView(
+                quote: viewModel.currentQuote,
                 isFavorite: isFavorite,
-                isDisabled: viewModel.currentQuote == nil,
                 onToggleFavorite: toggleFavorite
             )
             .padding(.top, 16)
@@ -111,5 +111,6 @@ struct MainPageView: View {
 
 #Preview {
     MainPageView()
+        .modelContainer(PreviewData.container)
         .environment(PreviewData.favoritesService)
 }
