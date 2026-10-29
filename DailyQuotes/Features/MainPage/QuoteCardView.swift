@@ -14,7 +14,6 @@ struct QuoteCardView: View {
         VStack(alignment: .leading, spacing: 16) {
             Text(quote.text)
                 .font(.system(.title2, design: .serif, weight: .medium))
-                .fontWeight(.medium)
                 .fixedSize(horizontal: false, vertical: true)
             
             Text(quote.author)

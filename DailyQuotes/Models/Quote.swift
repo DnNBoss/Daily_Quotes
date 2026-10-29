@@ -6,28 +6,27 @@
 //
 
 import Foundation
+import SwiftData
 
+@Model
 final class Quote {
-    let id: UUID
-    let text: String
-    let author: String
-    let category: String
-    let createdAt: Date
-    let isFavorite: Bool
+    var id: UUID
+    var text: String
+    var author: String
+    var categories: [String]
+    var addedAt: Date
     
     init(
         text: String,
         author: String,
-        category: String,
-        createdAt: Date,
-        isFavorite: Bool
+        categories: [String] = [],
+        addedAt: Date = .now
     ) {
         self.id = UUID()
         self.text = text
         self.author = author
-        self.category = category
-        self.createdAt = createdAt
-        self.isFavorite = isFavorite
+        self.categories = categories
+        self.addedAt = addedAt
     }
 }
 
@@ -36,9 +35,12 @@ extension Quote {
         Quote(
             text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
             author: "Unknown",
-            category: "General",
-            createdAt: Date(),
-            isFavorite: false
+            categories: ["General", "Wisdom"],
+            addedAt: Date()
         )
+    }
+    
+    func makeCopy() -> Quote {
+        Quote(text: text, author: author, categories: categories)
     }
 }

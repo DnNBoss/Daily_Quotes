@@ -21,6 +21,10 @@ extension MainPageView {
         private(set) var state: State = .idle
         private let service: QuotesService
         
+        var currentQuote: Quote? {
+            if case .loaded(let quote) = state { quote } else { nil }
+        }
+        
         init(service: QuotesService = QuotesService()) {
             self.service = service
         }

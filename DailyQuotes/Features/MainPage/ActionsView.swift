@@ -8,9 +8,20 @@
 import SwiftUI
 
 struct ActionsView: View {
+    let isFavorite: Bool
+    let isDisabled: Bool
+    let onToggleFavorite: () -> Void
+    
     var body: some View {
         HStack(spacing: 0) {
-            actionButton(icon: "heart", title: "Favorite") { }
+            actionButton(
+                icon: isFavorite ? "heart.fill" : "heart",
+                title: "Favorite",
+                tint: isFavorite ? .pink : .primary,
+                action: onToggleFavorite
+            )
+            .disabled(isDisabled)
+            
             Spacer()
             actionButton(icon: "translate", title: "Translate") { }
             Spacer()
@@ -21,7 +32,12 @@ struct ActionsView: View {
     }
     
     @ViewBuilder
-    private func actionButton(icon: String, title: String, action: @escaping () -> Void) -> some View {
+    private func actionButton(
+        icon: String,
+        title: String,
+        tint: Color = .primary,
+        action: @escaping () -> Void
+    ) -> some View {
         Button(action: action) {
             VStack(spacing: 6) {
                 Image(systemName: icon)
@@ -30,12 +46,12 @@ struct ActionsView: View {
                 Text(title)
                     .font(.caption)
             }
-            .foregroundStyle(.primary)
+            .foregroundStyle(tint)
         }
         .buttonStyle(.plain)
     }
 }
 
 #Preview {
-    ActionsView()
+    ActionsView(isFavorite: false, isDisabled: false, onToggleFavorite: { })
 }

@@ -5,12 +5,23 @@
 //  Created by Дмитрий Козлов on 13.09.26.
 //
 
+import SwiftData
 import SwiftUI
 
 struct MainPageView: View {
+    @Environment(FavoritesService.self) private var favoritesService
+    @Query private var quotes: [Quote]
+    
     @State private var viewModel = ViewModel()
+    @State private var showingErrorAlert = false
+    @State private var errorMessage = ""
     
     private let timeOfDay: TimeOfDay = .current
+    
+    private var isFavorite: Bool {
+        guard let quote = viewModel.currentQuote else { return false }
+        return quotes.contains { $0.text == quote.text && $0.author == quote.author }
+    }
     
     var body: some View {
         VStack(spacing: 0) {
@@ -24,13 +35,22 @@ struct MainPageView: View {
             quoteScrollArea
                 .frame(maxHeight: .infinity)
             
-            ActionsView()
-                .padding(.top, 16)
+            ActionsView(
+                isFavorite: isFavorite,
+                isDisabled: viewModel.currentQuote == nil,
+                onToggleFavorite: toggleFavorite
+            )
+            .padding(.top, 16)
             
             nextQuoteLabel
                 .padding(.vertical, 32)
         }
         .padding(.horizontal, 20)
+        .alert("Error!", isPresented: $showingErrorAlert) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(errorMessage)
+        }
         .task {
             await viewModel.loadIfNeeded()
         }
@@ -77,8 +97,19 @@ struct MainPageView: View {
             }
         }
     }
+    
+    private func toggleFavorite() {
+        guard let quote = viewModel.currentQuote else { return }
+        do {
+            try favoritesService.toggle(quote)
+        } catch {
+            errorMessage = error.localizedDescription
+            showingErrorAlert = true
+        }
+    }
 }
 
 #Preview {
     MainPageView()
+        .environment(PreviewData.favoritesService)
 }
