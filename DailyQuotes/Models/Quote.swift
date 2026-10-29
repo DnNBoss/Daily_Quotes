@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class Quote {
+final class Quote: Hashable {
     var id: UUID
     var text: String
     var author: String
@@ -38,6 +38,10 @@ extension Quote {
             categories: ["General", "Wisdom"],
             addedAt: Date()
         )
+    }
+    
+    var shareText: String {
+        "«\(text)» - \(author)"
     }
     
     func makeCopy() -> Quote {
