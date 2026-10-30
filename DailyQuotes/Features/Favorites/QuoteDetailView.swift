@@ -50,7 +50,7 @@ struct QuoteDetailView: View {
             }
             
             Section("Actions") {
-                ShareLink(item: "«\(quote.text)» - \(quote.author)")
+                ShareLink(item: quote.shareText)
                 
                 Button(role: .destructive) {
                     showingDeleteConfirm = true

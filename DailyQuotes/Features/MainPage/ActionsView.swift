@@ -8,50 +8,61 @@
 import SwiftUI
 
 struct ActionsView: View {
+    let quote: Quote?
     let isFavorite: Bool
-    let isDisabled: Bool
     let onToggleFavorite: () -> Void
+    let onTranslate: () -> Void
     
     var body: some View {
         HStack(spacing: 0) {
-            actionButton(
-                icon: isFavorite ? "heart.fill" : "heart",
-                title: "Favorite",
-                tint: isFavorite ? .pink : .primary,
-                action: onToggleFavorite
-            )
-            .disabled(isDisabled)
+            Button(action: onToggleFavorite) {
+                label(
+                    "Favorite",
+                    systemImage: isFavorite ? "heart.fill" : "heart",
+                    tint: isFavorite ? .pink : .primary
+                )
+            }
             
             Spacer()
-            actionButton(icon: "translate", title: "Translate") { }
+            
+            Button(action: onTranslate) {
+                label(
+                    "Translate",
+                    systemImage: "translate"
+                )
+            }
+            
             Spacer()
-            actionButton(icon: "square.and.arrow.up", title: "Share") { }
+            
+            ShareLink(item: quote?.shareText ?? "") {
+                label(
+                    "Share",
+                    systemImage: "square.and.arrow.up"
+                )
+            }
         }
+        .buttonStyle(.plain)
+        .disabled(quote == nil)
         .padding(.horizontal, 48)
         .frame(maxWidth: .infinity)
     }
     
-    @ViewBuilder
-    private func actionButton(
-        icon: String,
-        title: String,
-        tint: Color = .primary,
-        action: @escaping () -> Void
+    private func label(
+        _ title: String,
+        systemImage: String,
+        tint: Color = .primary
     ) -> some View {
-        Button(action: action) {
-            VStack(spacing: 6) {
-                Image(systemName: icon)
-                    .font(.title2)
-                
-                Text(title)
-                    .font(.caption)
-            }
-            .foregroundStyle(tint)
+        VStack(spacing: 6) {
+            Image(systemName: systemImage)
+                .font(.title2)
+            
+            Text(title)
+                .font(.caption)
         }
-        .buttonStyle(.plain)
+        .foregroundStyle(tint)
     }
 }
 
 #Preview {
-    ActionsView(isFavorite: false, isDisabled: false, onToggleFavorite: { })
+    ActionsView(quote: .sample, isFavorite: false, onToggleFavorite: { }, onTranslate: { })
 }
