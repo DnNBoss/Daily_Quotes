@@ -7,56 +7,54 @@
 
 import Foundation
 
-enum TimeOfDay {
+enum TimeOfDay: CaseIterable {
     case morning, afternoon, evening, night
     
-    static var current: TimeOfDay {
-        switch Calendar.current.component(.hour, from: Date.now) {
-        case 5..<12:
-            return .morning
-        case 12..<17:
-            return .afternoon
-        case 17..<23:
-            return .evening
-        default:
-            return .night
+    static var current: TimeOfDay { TimeOfDay(at: .now) }
+    static let sortedCases = allCases.sorted { $0.startHour < $1.startHour }
+
+    var startHour: Int {
+        switch self {
+        case .morning: 5
+        case .afternoon: 12
+        case .evening: 18
+        case .night: 23
         }
     }
     
+    
+    init(at date: Date, calendar: Calendar = .current) {
+        let hour = calendar.component(.hour, from: date)
+        
+        self = Self.sortedCases.last { $0.startHour <= hour } ?? .night
+    }
+}
+
+extension TimeOfDay {
     var greeting: String {
         switch self {
-        case .morning:
-            return "Good morning!"
-        case .afternoon:
-            return "Good afternoon!"
-        case .evening:
-            return "Good evening!"
-        case .night:
-            return "Good night!"
+        case .morning: "Good morning!"
+        case .afternoon: "Good afternoon!"
+        case .evening: "Good evening!"
+        case .night: "Good night!"
         }
     }
     
     var quoteBadge: String {
         switch self {
-        case .morning:
-            return "Morning quote"
-        case .afternoon:
-            return "Afternoon quote"
-        default:
-            return "Evening quote"
+        case .morning: "Morning quote"
+        case .afternoon: "Afternoon quote"
+        case .evening: "Evening quote"
+        case .night: "Night quote"
         }
     }
     
     var symbol: String {
         switch self {
-        case .morning:
-            return "sun.horizon"
-        case .afternoon:
-            return "sun.max"
-        case .evening:
-            return "cloud.moon"
-        case .night:
-            return "moon.stars"
+        case .morning: "sun.horizon"
+        case .afternoon: "sun.max"
+        case .evening: "cloud.moon"
+        case .night: "moon.stars"
         }
     }
 }
