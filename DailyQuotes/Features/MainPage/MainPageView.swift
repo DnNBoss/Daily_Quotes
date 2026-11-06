@@ -18,8 +18,6 @@ struct MainPageView: View {
     @State private var showingErrorAlert = false
     @State private var errorMessage = ""
     
-    private let timeOfDay: TimeOfDay = .current
-    
     private var isFavorite: Bool {
         guard let quote = viewModel.currentQuote else { return false }
         return quotes.contains { $0.text == quote.text && $0.author == quote.author }
@@ -27,10 +25,10 @@ struct MainPageView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            HeaderView(timeOfDay: timeOfDay)
+            HeaderView(timeOfDay: viewModel.greetingTime)
                 .padding(.top, 8)
             
-            QuoteBadgeView(timeOfDay: timeOfDay)
+            QuoteBadgeView(timeOfDay: viewModel.badgeTime)
                 .padding(.top, 32)
                 .padding(.bottom, 20)
             
@@ -60,11 +58,14 @@ struct MainPageView: View {
         }
     }
     
+    @ViewBuilder
     private var nextQuoteLabel: some View {
-        Text("Next quote in 7h 30m")
-            .font(.caption)
-            .foregroundStyle(.secondary)
-            .frame(maxWidth: .infinity)
+        if let next = viewModel.nextQuoteAt {
+            Text("Next quote in \(next, format: .dateTime.hour().minute())")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity)
+        }
     }
     
     private var quoteScrollArea: some View {

@@ -21,6 +21,12 @@ extension MainPageView {
         private(set) var state: State = .idle
         private let service: QuotesService
         
+        var greetingTime: TimeOfDay { .current }
+        
+        var badgeTime: TimeOfDay { QuoteSlot().period }
+        
+        var nextQuoteAt: Date? { QuoteSlot.nextStart() }
+        
         var currentQuote: Quote? {
             if case .loaded(let quote) = state { quote } else { nil }
         }
