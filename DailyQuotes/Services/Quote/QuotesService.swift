@@ -8,7 +8,23 @@
 import Foundation
 
 final class QuotesService {
-    func fetchQuoteOfTheDay() async throws -> Quote {
+    private let cache: QuoteCache
+    
+    init(cache: QuoteCache = QuoteCache()) {
+        self.cache = cache
+    }
+    
+    func getQuote(for slot: QuoteSlot) async throws -> Quote {
+        if let cachedQuote = cache.load(for: slot) {
+            return cachedQuote
+        }
+        
+        let quote = try await fetchRandomQuote()
+        cache.save(quote, for: slot)
+        return quote
+    }
+    
+    private func fetchRandomQuote() async throws -> Quote {
         let request = try makeRequest()
         let (data, response) = try await perform(request)
         try validate(response)
@@ -16,9 +32,8 @@ final class QuotesService {
         return dto.toDomain()
     }
     
-    
     private func makeRequest() throws -> URLRequest {
-        guard let url = APIConfiguration.quoteOfTheDayURL else {
+        guard let url = APIConfiguration.randomQuoteURL else {
             throw APIError.invalidURL
         }
         
@@ -31,6 +46,8 @@ final class QuotesService {
     private func perform(_ request: URLRequest) async throws -> (Data, URLResponse) {
         do {
             return try await URLSession.shared.data(for: request)
+        } catch let error as URLError where error.code == .cancelled {
+            throw CancellationError()
         } catch {
             throw APIError.network(error)
         }

@@ -8,7 +8,7 @@
 import Foundation
 
 enum APIConfiguration {
-    static let quoteOfTheDayURL = URL(string: "https://api.api-ninjas.com/v2/quoteoftheday")
+    static let randomQuoteURL = URL(string: "https://api.api-ninjas.com/v2/randomquotes")
     
     static var apiKey: String {
         guard
