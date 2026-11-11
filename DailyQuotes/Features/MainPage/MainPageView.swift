@@ -11,7 +11,8 @@ import Translation
 
 struct MainPageView: View {
     @Environment(FavoritesService.self) private var favoritesService
-    @Query private var quotes: [Quote]
+    @Environment(\.scenePhase) private var scenePhase
+    @Query private var favorites: [Quote]
     
     @State private var viewModel = ViewModel()
     @State private var showingTranslation = false
@@ -20,7 +21,7 @@ struct MainPageView: View {
     
     private var isFavorite: Bool {
         guard let quote = viewModel.currentQuote else { return false }
-        return quotes.contains { $0.text == quote.text && $0.author == quote.author }
+        return favorites.contains { $0.text == quote.text && $0.author == quote.author }
     }
     
     var body: some View {
@@ -42,12 +43,12 @@ struct MainPageView: View {
                 onTranslate: { showingTranslation = true }
             )
             .padding(.top, 16)
-            .translationPresentation(isPresented: $showingTranslation, text: viewModel.currentQuote?.text ?? "")
             
             nextQuoteLabel
                 .padding(.vertical, 32)
         }
         .padding(.horizontal, 20)
+        .translationPresentation(isPresented: $showingTranslation, text: viewModel.currentQuote?.text ?? "")
         .alert("Error!", isPresented: $showingErrorAlert) {
             Button("OK", role: .cancel) { }
         } message: {
@@ -56,12 +57,16 @@ struct MainPageView: View {
         .task {
             await viewModel.loadIfNeeded()
         }
+        .onChange(of: scenePhase) { _, phase in
+            guard phase == .active else { return }
+            Task { await viewModel.loadIfNeeded() }
+        }
     }
     
     @ViewBuilder
     private var nextQuoteLabel: some View {
         if let next = viewModel.nextQuoteAt {
-            Text("Next quote in \(next, format: .dateTime.hour().minute())")
+            Text("Next quote at \(next, format: .dateTime.hour().minute())")
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .frame(maxWidth: .infinity)
