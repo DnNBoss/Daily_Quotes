@@ -8,7 +8,11 @@
 import Foundation
 
 final class QuotesService {
-    private let cache = QuoteCache()
+    private let cache: QuoteCache
+    
+    init(cache: QuoteCache = QuoteCache()) {
+        self.cache = cache
+    }
     
     func getQuote(for slot: QuoteSlot) async throws -> Quote {
         if let cachedQuote = cache.load(for: slot) {
@@ -42,6 +46,8 @@ final class QuotesService {
     private func perform(_ request: URLRequest) async throws -> (Data, URLResponse) {
         do {
             return try await URLSession.shared.data(for: request)
+        } catch let error as URLError where error.code == .cancelled {
+            throw CancellationError()
         } catch {
             throw APIError.network(error)
         }

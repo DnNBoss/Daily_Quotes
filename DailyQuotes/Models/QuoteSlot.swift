@@ -7,25 +7,27 @@
 
 import Foundation
 
-struct QuoteSlot: Equatable {
+struct QuoteSlot: Hashable {
     
     let period: TimeOfDay
     let start: Date
     
     private static let periods = TimeOfDay.sortedCases.filter { $0 != .night }
+    private static let lastPeriod = periods.last ?? .evening
     
     init(at date: Date = .now, calendar: Calendar = .current) {
         let hour = calendar.component(.hour, from: date)
         
-        period = Self.periods.last(where: { $0.startHour <= hour }) ?? .evening
+        let period = Self.periods.last(where: { $0.startHour <= hour }) ?? Self.lastPeriod
         
         let isYesterday = hour < period.startHour
         let day = calendar.date(byAdding: .day, value: isYesterday ? -1 : 0, to: date) ?? date
         
+        self.period = period
         self.start = calendar.date(bySettingHour: period.startHour, minute: 0, second: 0, of: day) ?? date
     }
     
-    static func nextStart(at date: Date = .now, calendar: Calendar = .current) -> Date? {
+    static func nextStart(after date: Date = .now, calendar: Calendar = .current) -> Date? {
         periods
             .compactMap {
                 calendar.nextDate(

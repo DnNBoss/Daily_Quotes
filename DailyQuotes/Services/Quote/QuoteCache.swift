@@ -15,12 +15,16 @@ struct QuoteCache {
         let slotStart: Date
     }
     
+    private let defaults: UserDefaults
     private let key = "currentQuoteSlot"
     
+    init(defaults: UserDefaults = .standard) {
+        self.defaults = defaults
+    }
     
     func load(for slot: QuoteSlot) -> Quote? {
         guard
-            let data = UserDefaults.standard.data(forKey: key),
+            let data = defaults.data(forKey: key),
             let entry = try? JSONDecoder().decode(Entry.self, from: data),
             entry.slotStart == slot.start
         else { return nil }
@@ -37,7 +41,7 @@ struct QuoteCache {
         )
         
         if let data = try? JSONEncoder().encode(entry) {
-            UserDefaults.standard.set(data, forKey: key)
+            defaults.set(data, forKey: key)
         }
     }
 }
