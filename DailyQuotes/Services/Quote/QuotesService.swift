@@ -7,6 +7,7 @@
 
 import Foundation
 
+@MainActor
 final class QuotesService {
     private let cache: QuoteCache
     

@@ -9,6 +9,7 @@ import Foundation
 
 extension MainPageView {
     
+    @MainActor
     @Observable
     final class ViewModel {
         enum State {
@@ -32,8 +33,8 @@ extension MainPageView {
             if case .loaded(let quote) = state { quote } else { nil }
         }
         
-        init(service: QuotesService = QuotesService()) {
-            self.service = service
+        init(service: QuotesService? = nil) {
+            self.service = service ?? QuotesService()
         }
         
         func loadIfNeeded() async {
