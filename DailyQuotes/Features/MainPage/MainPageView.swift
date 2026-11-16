@@ -18,6 +18,7 @@ struct MainPageView: View {
     @State private var showingTranslation = false
     @State private var showingErrorAlert = false
     @State private var errorMessage = ""
+    @State private var showingSettings = false
     
     private var isFavorite: Bool {
         guard let quote = viewModel.currentQuote else { return false }
@@ -26,7 +27,7 @@ struct MainPageView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            HeaderView(timeOfDay: viewModel.greetingTime)
+            HeaderView(timeOfDay: viewModel.greetingTime, showingSettings: $showingSettings)
                 .padding(.top, 8)
             
             QuoteBadgeView(timeOfDay: viewModel.badgeTime)
@@ -60,6 +61,9 @@ struct MainPageView: View {
         .onChange(of: scenePhase) { _, phase in
             guard phase == .active else { return }
             Task { await viewModel.loadIfNeeded() }
+        }
+        .sheet(isPresented: $showingSettings) {
+            SettingsView()
         }
     }
     

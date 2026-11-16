@@ -9,20 +9,32 @@ import SwiftUI
 
 struct HeaderView: View {
     let timeOfDay: TimeOfDay
+    @Binding var showingSettings: Bool
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(timeOfDay.greeting)
-                .font(.headline)
+        HStack(alignment: .top) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(timeOfDay.greeting)
+                    .font(.headline)
+                
+                Text(Date.now, format: .dateTime.day().month(.wide))
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
             
-            Text(Date.now, format: .dateTime.day().month(.wide))
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+            Button {
+                showingSettings = true
+            } label: {
+                Image(systemName: "gearshape")
+                    .font(.title3)
+                    .foregroundStyle(.secondary)
+            }
+            .buttonStyle(.plain)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
 #Preview {
-    HeaderView(timeOfDay: .current)
+    HeaderView(timeOfDay: .current, showingSettings: .constant(false))
 }
