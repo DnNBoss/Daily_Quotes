@@ -11,6 +11,7 @@ import SwiftData
 final class AppDependencies {
     let modelContainer: ModelContainer
     let favoritesService: FavoritesService
+    let settings: AppSettings
     
     init() {
         do {
@@ -19,7 +20,6 @@ final class AppDependencies {
             fatalError("Failed to create ModelContainer: \(error)")
         }
         favoritesService = FavoritesService(context: modelContainer.mainContext)
+        settings = AppSettings()
     }
-    
-    
 }

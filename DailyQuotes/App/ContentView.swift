@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(AppSettings.self) private var settings
+    
     var body: some View {
         TabView {
             MainPageView()
@@ -20,6 +22,7 @@ struct ContentView: View {
                     Label("Favorites", systemImage: "heart")
                 }
         }
+        .preferredColorScheme(settings.theme.colorScheme)
     }
 }
 
@@ -27,4 +30,5 @@ struct ContentView: View {
     ContentView()
         .modelContainer(PreviewData.container)
         .environment(PreviewData.favoritesService)
+        .environment(PreviewData.settings)
 }

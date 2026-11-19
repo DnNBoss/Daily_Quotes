@@ -5,6 +5,7 @@
 //  Created by Dmitry Kozlov on 26.10.26.
 //
 
+import Foundation
 import SwiftData
 
 @MainActor
@@ -27,6 +28,8 @@ enum PreviewData {
         }
         return container
     }()
+    
+    static let settings = AppSettings(defaults: UserDefaults(suiteName: "preview") ?? .standard)
     
     static var favoritesService: FavoritesService {
         FavoritesService(context: container.mainContext)

@@ -8,12 +8,13 @@
 import SwiftUI
 
 struct SettingsView: View {
+    @Environment(AppSettings.self) private var settings
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         NavigationStack {
             Form {
-                Text("Settings")
+                AppearanceSection()
             }
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
@@ -22,9 +23,11 @@ struct SettingsView: View {
                 }
             }
         }
+        .preferredColorScheme(settings.theme.colorScheme)
     }
 }
 
 #Preview {
     SettingsView()
+        .environment(PreviewData.settings)
 }

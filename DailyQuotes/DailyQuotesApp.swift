@@ -16,6 +16,7 @@ struct DailyQuotesApp: App {
         WindowGroup {
             ContentView()
                 .environment(dependencies.favoritesService)
+                .environment(dependencies.settings)
         }
         .modelContainer(dependencies.modelContainer)
     }

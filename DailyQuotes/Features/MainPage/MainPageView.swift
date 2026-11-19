@@ -127,4 +127,5 @@ struct MainPageView: View {
     MainPageView()
         .modelContainer(PreviewData.container)
         .environment(PreviewData.favoritesService)
+        .environment(PreviewData.settings)
 }
